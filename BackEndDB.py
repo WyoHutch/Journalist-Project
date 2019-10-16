@@ -144,7 +144,7 @@ def add_article():
     db.session.add(new_article)
     db.session.commit()
 
-    return single_aschema.jsonify(Articles.query.get(new_article.ID))
+    return single_aschema.jsonify(Articles.query.get(new_article.ArtID))
 
 @app.route('/articles', methods=['GET'])
 def get_articles():
@@ -180,26 +180,27 @@ def delete_article(id):
 
 @app.route('/picture', methods=['POST'])
 def add_picture():
-    ArticleID = request.json["ArticleID"]
+    
+    PicID = request.json["PicID"]
     TagLine = request.json["TagLine"]
 
 
-    new_article = Journalist(ArticleID, TagLine)
+    new_picture = Pictures(PicID, TagLine)
 
     db.session.add(new_picture)
     db.session.commit()
 
-    return single_aschema.jsonify(Journalist.query.get(new_picture.ID))
+    return single_pschema.jsonify(Pictures.query.get(new_picture.ID))
 
 @app.route('/pictures', methods=['GET'])
 def get_pictures():
     all_pictures = Pictures.query.all()
-    return jsonify(plural_jschema.dump(all_pictures))
+    return jsonify(plural_pschema.dump(all_pictures))
 
 @app.route('/getPicture/<id>', methods=['GET'])
 def return_picture(id):
     picture = Pictures.query.get(id)
-    return jsonify(single_jschema.dump(picture))
+    return jsonify(single_pschema.dump(picture))
 
 @app.route('/picture/<id>', methods=['PUT'])
 def update_picture(id):
@@ -210,11 +211,11 @@ def update_picture(id):
 
 
     db.session.commit()
-    return single_jschema.jsonify(picture)
+    return single_pschema.jsonify(picture)
 
 @app.route('/delPicture/<id>', methods=['DELETE'])
 def delete_picture(id):
-    picture = Picture.query.get(id)
+    picture = Pictures.query.get(id)
     db.session.delete(picture)
     db.session.commit()
 
