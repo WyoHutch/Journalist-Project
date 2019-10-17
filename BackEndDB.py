@@ -13,7 +13,7 @@ heroku = Heroku(app)
 # dbFile = "sqlite:///" + os.path.join(basedir, "Journalist.sqlite")
 # app.config["SQLALCHEMY_DATABASE_URI"] = dbFile
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://nftkskfcppdfmm:dd0940e817dc6997ce88498edf55455202daedc994e8193beecbc06f70c94b6e@ec2-54-235-163-246.compute-1.amazonaws.com:5432/dbci322q72m264"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://nvywzbiotjqrae:726f0a84ab6924cee56094abe537a1912ff18cdf287bce49ac5e806e5f5e9279@ec2-54-83-33-14.compute-1.amazonaws.com:5432/dd2ottmbl0967b"
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -137,7 +137,7 @@ def add_article():
     Subheading = request.json["Subheading"]
     Body = request.json["Body"]
 
-    new_journal = Articles(Writer, Heading, Subheading, Body)
+    new_article = Articles(Writer, Heading, Subheading, Body)
 
     db.session.add(new_article)
     db.session.commit()
@@ -179,22 +179,15 @@ def delete_article(id):
 @app.route('/picture', methods=['POST'])
 def add_picture():
     
-    PicID = request.json["PicID"]
+    ArticleID = request.json["PicID"]
     TagLine = request.json["TagLine"]
 
 
-    new_picture = Pictures(PicID, TagLine)
-<<<<<<< HEAD
+    new_picture = Pictures(ArticleID, TagLine)
 
     db.session.add(new_picture)
     db.session.commit()
 
-=======
-
-    db.session.add(new_picture)
-    db.session.commit()
-
->>>>>>> e0df3010779176b20561d28ed17c30992be05f7d
     return single_pschema.jsonify(Pictures.query.get(new_picture.ID))
 
 @app.route('/pictures', methods=['GET'])
