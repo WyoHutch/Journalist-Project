@@ -184,10 +184,17 @@ def add_picture():
 
 
     new_picture = Pictures(PicID, TagLine)
+<<<<<<< HEAD
 
     db.session.add(new_picture)
     db.session.commit()
 
+=======
+
+    db.session.add(new_picture)
+    db.session.commit()
+
+>>>>>>> e0df3010779176b20561d28ed17c30992be05f7d
     return single_pschema.jsonify(Pictures.query.get(new_picture.ID))
 
 @app.route('/pictures', methods=['GET'])
