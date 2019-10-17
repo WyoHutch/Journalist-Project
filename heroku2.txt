@@ -1,0 +1,20 @@
+enigmatic-earth-83722  postgresql-vertical-98410  heroku-postgresql:hobby-dev  free   created
+
+https://desolate-bastion-18101.herokuapp.com/ | https://git.heroku.com/desolate-bastion-18101.git
+
+postgresql-amorphous-87435
+
+https://desolate-bastion-18101.herokuapp.com/postgresql-amorphous-87435
+
+postgres://nvywzbiotjqrae:726f0a84ab6924cee56094abe537a1912ff18cdf287bce49ac5e806e5f5e9279@ec2-54-83-33-14.compute-1.amazonaws.com:5432/dd2ottmbl0967b
+
+# basedir = os.path.abspath(os.path.dirname(__file__))
+# dbFile = "sqlite:///" + os.path.join(basedir, "Journalist.sqlite")
+# app.config["SQLALCHEMY_DATABASE_URI"] = dbFile
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://nvywzbiotjqrae:726f0a84ab6924cee56094abe537a1912ff18cdf287bce49ac5e806e5f5e9279@ec2-54-83-33-14.compute-1.amazonaws.com:5432/dd2ottmbl0967b"
+db = SQLAlchemy(app)
+
+ma = Marshmallow(app)
+
+

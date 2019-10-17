@@ -3,23 +3,21 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_heroku import Heroku
-import sqlite3
-
-
 import os
 
 app = Flask(__name__)
 heroku = Heroku(app)
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-dbFile = "sqlite:///" + os.path.join(basedir, "Journalist.sqlite")
-app.config["SQLALCHEMY_DATABASE_URI"] = dbFile
-conn = sqlite3.connect('./Journalist.sqlite')
+# basedir = os.path.abspath(os.path.dirname(__file__))
+# dbFile = "sqlite:///" + os.path.join(basedir, "Journalist.sqlite")
+# app.config["SQLALCHEMY_DATABASE_URI"] = dbFile
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://nftkskfcppdfmm:dd0940e817dc6997ce88498edf55455202daedc994e8193beecbc06f70c94b6e@ec2-54-235-163-246.compute-1.amazonaws.com:5432/dbci322q72m264"
+
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://nftkskfcppdfmm:dd0940e817dc6997ce88498edf55455202daedc994e8193beecbc06f70c94b6e@ec2-54-235-163-246.compute-1.amazonaws.com:5432/dbci322q72m264"
 
 CORS(app)
 
@@ -134,24 +132,24 @@ def delete_journal(id):
 
 @app.route('/article', methods=['POST'])
 def add_article():
-    FName = request.json["FName"]
-    LName = request.json["LName"]
-    Description = request.json["Description"]
-    # Picture = request.json["Picture"]
+    Writer = request.json["Writer"]
+    Heading = request.json["Heading"]
+    Subheading = request.json["Subheading"]
+    Body = request.json["Body"]
 
-    new_journal = Articles(FName, LName, Description)
+    new_journal = Articles(Writer, Heading, Subheading, Body)
 
     db.session.add(new_article)
     db.session.commit()
 
-    return single_aschema.jsonify(Articles.query.get(new_article.ID))
+    return single_aschema.jsonify(Articles.query.get(new_article.ArtID))
 
 @app.route('/articles', methods=['GET'])
 def get_articles():
     all_articles = Articles.query.all()
     return jsonify(plural_aschema.dump(all_articles))
 
-@app.route('/getJournal/<id>', methods=['GET'])
+@app.route('/getArticle/<id>', methods=['GET'])
 def return_article(id):
     article = Articles.query.get(id)
     return jsonify(single_aschema.dump(article))
@@ -160,10 +158,10 @@ def return_article(id):
 def update_article(id):
     article = Articles.query.get(id)
 
-    article.FName = request.json('FName')
-    article.LName = request.json('LName')
-    article.Description = request.json('Description')
-    # journal.Pictures = request.json('Pictures')
+    article.Writer = request.json('Writer')
+    article.Heading = request.json('Heading')
+    article.Subheading = request.json('Subheading')
+    article.Body = request.json('Body')
 
     db.session.commit()
     return single_aschema.jsonify(article)
@@ -178,49 +176,48 @@ def delete_article(id):
 
 # Picture Endpoints Defined Here
 
-# @app.route('/article', methods=['POST'])
-# def add_article():
-#     FName = request.json["FName"]
-#     LName = request.json["LName"]
-#     Description = request.json["Description"]
-#     # Picture = request.json["Picture"]
+@app.route('/picture', methods=['POST'])
+def add_picture():
+    
+    PicID = request.json["PicID"]
+    TagLine = request.json["TagLine"]
 
-#     new_article = Journalist(FName, LName, Description)
 
-#     db.session.add(new_article)
-#     db.session.commit()
+    new_picture = Pictures(PicID, TagLine)
 
-#     return single_aschema.jsonify(Journalist.query.get(new_article.ID))
+    db.session.add(new_picture)
+    db.session.commit()
 
-# @app.route('/journalists', methods=['GET'])
-# def get_journalists():
-#     all_journalists = Journalist.query.all()
-#     return jsonify(plural_jschema.dump(all_journalists))
+    return single_pschema.jsonify(Pictures.query.get(new_picture.ID))
 
-# @app.route('/getJournal/<id>', methods=['GET'])
-# def return_journal(id):
-#     journal = Journalist.query.get(id)
-#     return jsonify(single_jschema.dump(journal))
+@app.route('/pictures', methods=['GET'])
+def get_pictures():
+    all_pictures = Pictures.query.all()
+    return jsonify(plural_pschema.dump(all_pictures))
 
-# @app.route('/journalist/<id>', methods=['PUT'])
-# def update_journalist(id):
-#     journal = Journalist.query.get(id)
+@app.route('/getPicture/<id>', methods=['GET'])
+def return_picture(id):
+    picture = Pictures.query.get(id)
+    return jsonify(single_pschema.dump(picture))
 
-#     journal.FName = request.json('FName')
-#     journal.LName = request.json('LName')
-#     journal.Description = request.json('Description')
-#     # journal.Pictures = request.json('Pictures')
+@app.route('/picture/<id>', methods=['PUT'])
+def update_picture(id):
+    picture = Pictures.query.get(id)
 
-#     db.session.commit()
-#     return single_jschema.jsonify(journal)
+    picture.ArticleID = request.json('ArticleID')
+    picture.TagLine = request.json('TagLine')
 
-# @app.route('/delJournal/<id>', methods=['DELETE'])
-# def delete_journal(id):
-#     journal = Journalist.query.get(id)
-#     db.session.delete(journal)
-#     db.session.commit()
 
-#     return "Journalist Record Deleted"
+    db.session.commit()
+    return single_pschema.jsonify(picture)
+
+@app.route('/delPicture/<id>', methods=['DELETE'])
+def delete_picture(id):
+    picture = Pictures.query.get(id)
+    db.session.delete(picture)
+    db.session.commit()
+
+    return "Picture Record Deleted"
 
 if __name__ == '__main__':
     app.run(debug = True)
